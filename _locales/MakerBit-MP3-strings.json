@@ -1,0 +1,13 @@
+{
+  "Motor.All|block": "A + B",
+  "Motor.A|block": "A",
+  "Motor.B|block": "B",
+  "MotorRotation.Clockwise|block": "clockwise",
+  "MotorRotation.CounterClockwise|block": "counter-clockwise",
+  "makerbit.runMotor|block": "run motor %motor | at speed %speed",
+  "makerbit.setMotorRotation|block": "set motor %motor rotation | to %rotation",
+  "makerbit.stopMotor|block": "stop motor %motor",
+  "makerbit|block": "MakerBit",
+  "{id:category}Makerbit": "Makerbit",
+  "{id:subcategory}Motors": "Motors"
+}

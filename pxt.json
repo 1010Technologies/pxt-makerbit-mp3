@@ -1,0 +1,19 @@
+{
+    "name": "MakerBit-MP3",
+    "version": "0.0.1",
+    "description": "MakeCode extension for Serial MP3 devices with the YX5300 chip",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "namespace.ts",
+        "README.md",
+        "mp3.ts",
+        "_locales/de/MakerBit-MP3-strings.json"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": true
+}
