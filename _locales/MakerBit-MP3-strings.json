@@ -1,13 +1,17 @@
 {
-  "Motor.All|block": "A + B",
-  "Motor.A|block": "A",
-  "Motor.B|block": "B",
-  "MotorRotation.Clockwise|block": "clockwise",
-  "MotorRotation.CounterClockwise|block": "counter-clockwise",
-  "makerbit.runMotor|block": "run motor %motor | at speed %speed",
-  "makerbit.setMotorRotation|block": "set motor %motor rotation | to %rotation",
-  "makerbit.stopMotor|block": "stop motor %motor",
+  "Mp3Repeat.Forever|block": "forever",
+  "Mp3Repeat.No|block": "once",
+  "makerbit.connectSerialMp3|block": "connect MP3 device with MP3 RX attached to %mp3RX | and MP3 TX to %mp3TX",
+  "makerbit.mp3Folder|block": "MP3 folder",
+  "makerbit.mp3Track|block": "MP3 track",
+  "makerbit.mp3Volume|block": "MP3 volume",
+  "makerbit.onMp3TrackCompleted|block": "on MP3 track completed",
+  "makerbit.onMp3TrackStarted|block": "on MP3 track started",
+  "makerbit.playMp3Folder|block": "play MP3 folder %folder | %repeat",
+  "makerbit.playMp3TrackFromFolder|block": "play MP3 track %track | from folder %folder | %repeat",
+  "makerbit.runMp3Command|block": "run MP3 command %command",
+  "makerbit.setMp3Volume|block": "set MP3 volume to %volume",
   "makerbit|block": "MakerBit",
   "{id:category}Makerbit": "Makerbit",
-  "{id:subcategory}Motors": "Motors"
+  "{id:subcategory}MP3": "MP3"
 }

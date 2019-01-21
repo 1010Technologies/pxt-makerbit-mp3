@@ -1,15 +1,27 @@
 /**
- * Motor tests
+ * Serial MP3 tests
  */
 
-makerbit.runMotor(Motor.A, 80);
-makerbit.stopMotor(Motor.A);
+makerbit.connectSerialMp3(DigitalPin.P0, DigitalPin.P1);
 
-makerbit.runMotor(Motor.B, -50);
-makerbit.stopMotor(Motor.B);
+makerbit.playMp3TrackFromFolder(1, 1, Mp3Repeat.No);
+makerbit.playMp3TrackFromFolder(1, 1, Mp3Repeat.Forever);
+makerbit.playMp3Folder(1, Mp3Repeat.No);
+makerbit.playMp3Folder(1, Mp3Repeat.Forever);
+makerbit.setMp3Volume(30);
 
-makerbit.runMotor(Motor.All, 80);
-makerbit.stopMotor(Motor.All);
+makerbit.runMp3Command(Mp3Command.PLAY_NEXT_TRACK);
+makerbit.runMp3Command(Mp3Command.PLAY_PREVIOUS_TRACK);
+makerbit.runMp3Command(Mp3Command.INCREASE_VOLUME);
+makerbit.runMp3Command(Mp3Command.DECREASE_VOLUME);
+makerbit.runMp3Command(Mp3Command.PAUSE);
+makerbit.runMp3Command(Mp3Command.RESUME);
+makerbit.runMp3Command(Mp3Command.STOP);
+makerbit.runMp3Command(Mp3Command.MUTE);
+makerbit.runMp3Command(Mp3Command.UNMUTE);
 
-makerbit.setMotorRotation(Motor.A, MotorRotation.Clockwise);
-makerbit.setMotorRotation(Motor.B, MotorRotation.CounterClockwise);
+makerbit.onMp3TrackStarted(() => {});
+makerbit.onMp3TrackCompleted(() => {});
+const folder: number = makerbit.mp3Folder();
+const track: number = makerbit.mp3Track();
+const volume: number = makerbit.mp3Volume();
