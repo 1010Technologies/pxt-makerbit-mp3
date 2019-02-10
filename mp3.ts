@@ -26,14 +26,14 @@ namespace makerbit {
   }
 
   interface DeviceState {
-    track: number;
-    folder: number;
+    track: uint16;
+    folder: uint8;
     playMode: PlayMode;
     repeat: Mp3Repeat;
-    maxTracksInFolder: number;
-    volume: number;
-    previousTrackCompletedResponse: number;
-    lastTrackEventValue: number;
+    maxTracksInFolder: uint8;
+    volume: uint8;
+    previousTrackCompletedResponse: int16;
+    lastTrackEventValue: uint16;
   }
 
   let deviceState: DeviceState;
@@ -133,7 +133,7 @@ namespace makerbit {
   //% mp3TX.fieldOptions.tooltips="false"
   //% weight=50
   export function connectSerialMp3(mp3RX: DigitalPin, mp3TX: DigitalPin): void {
-    serial.redirect(0 + mp3RX, 0 + mp3TX, BaudRate.BaudRate9600);
+    serial.redirect(mp3RX as number, mp3TX as number, BaudRate.BaudRate9600);
     control.inBackground(readSerial);
     sendCommand(YX5300.selectDeviceTfCard());
     control.waitMicros(500 * 1000);
