@@ -8,14 +8,23 @@ const enum Mp3Repeat {
 }
 
 const enum Mp3Command {
+  //% block="play next track"
   PLAY_NEXT_TRACK,
+  //% block="play previous track"
   PLAY_PREVIOUS_TRACK,
+  //% block="increase volume"
   INCREASE_VOLUME,
+  //% block="decrease volume"
   DECREASE_VOLUME,
+  //% block="pause"
   PAUSE,
+  //% block="resume"
   RESUME,
+  //% block="stop"
   STOP,
+  //% block="mute"
   MUTE,
+  //% block="unmute"
   UNMUTE
 }
 
@@ -252,7 +261,7 @@ namespace makerbit {
    */
   //% subcategory="MP3"
   //% blockId="makerbit_mp3_run_command"
-  //% block="run MP3 command %command"
+  //% block="MP3 %command"
   //% weight=45
   export function runMp3Command(command: Mp3Command): void {
     if (!deviceState) {
