@@ -6,7 +6,7 @@
   "Mp3Command.PLAY_NEXT_TRACK|block": "spiele nächsten Titel",
   "Mp3Command.PLAY_PREVIOUS_TRACK|block": "spiele vorherigen Titel",
   "Mp3Command.RESUME|block": "fortsetzen",
-  "Mp3Command.STOP|block": "stop",
+  "Mp3Command.STOP|block": "stoppen",
   "Mp3Command.UNMUTE|block": "laut schalten",
   "Mp3Repeat.Forever|block": "dauerhaft",
   "Mp3Repeat.No|block": "einmal",
