@@ -45,7 +45,7 @@ If you experience playback problems, check for deviations to the naming conventi
 
 ### MakerBit connectSerialMp3
 
-Connects to serial MP3 device with chip YX5300. The first pin needs to be attached the MP3 device receiver pin (RX) and the second pin to the MP3 device transmitter pin (TX).
+Connects to the Serial MP3 device. The first pin needs to be attached the MP3 device receiver pin (RX) and the second pin to the MP3 device transmitter pin (TX).
 
 ```sig
 makerbit.connectSerialMp3(DigitalPin.P0, DigitalPin.P1)
