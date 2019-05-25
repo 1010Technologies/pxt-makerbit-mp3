@@ -43,6 +43,7 @@ namespace makerbit {
     volume: uint8;
     previousTrackCompletedResponse: int16;
     lastTrackEventValue: uint16;
+    isPlaying: boolean;
   }
 
   let deviceState: DeviceState;
@@ -91,6 +92,8 @@ namespace makerbit {
       return;
     }
 
+    deviceState.isPlaying = false;
+
     if (deviceState.track < deviceState.maxTracksInFolder) {
       deviceState.maxTracksInFolder = deviceState.track;
     }
@@ -119,7 +122,7 @@ namespace makerbit {
         deviceState.track
       );
       deviceState.lastTrackEventValue = deviceState.track;
-
+      deviceState.isPlaying = false;
       if (deviceState.playMode === PlayMode.Folder) {
         deviceState.track++;
         playTrackOnDevice(deviceState);
@@ -157,8 +160,30 @@ namespace makerbit {
       maxTracksInFolder: YX5300.MAX_TRACKS_PER_FOLDER,
       volume: 30,
       previousTrackCompletedResponse: -1,
-      lastTrackEventValue: 0
+      lastTrackEventValue: 0,
+      isPlaying: false
     };
+  }
+
+  /**
+   * Plays a track from a folder and waits for completion.
+   * @param track track index, eg:1
+   * @param folder folder index, eg:1
+   */
+  //% subcategory="MP3"
+  //% blockId="makerbit_mp3_play_track" block="play MP3 track %track | from folder %folder and wait for completion"
+  //% track.min=1 track.max=255
+  //% folder.min=1 folder.max=99
+  //% weight=49
+  export function playMp3Track(track: number, folder: number): void {
+    if (!deviceState) {
+      return;
+    }
+
+    playMp3TrackFromFolder(track, folder, Mp3Repeat.No);
+    while (deviceState.isPlaying) {
+      basic.pause(250);
+    }
   }
 
   /**
@@ -232,6 +257,7 @@ namespace makerbit {
       MICROBIT_MAKERBIT_MP3_TRACK_STARTED_ID,
       deviceState.track
     );
+    deviceState.isPlaying = true;
     deviceState.lastTrackEventValue = deviceState.track;
   }
 
@@ -300,6 +326,7 @@ namespace makerbit {
         sendCommand(YX5300.resume());
         break;
       case Mp3Command.STOP:
+        deviceState.isPlaying = false;
         sendCommand(YX5300.stop());
         break;
       case Mp3Command.MUTE:

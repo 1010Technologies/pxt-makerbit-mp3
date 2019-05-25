@@ -4,6 +4,7 @@
 
 makerbit.connectSerialMp3(DigitalPin.P0, DigitalPin.P1);
 
+makerbit.playMp3Track(1, 1);
 makerbit.playMp3TrackFromFolder(1, 1, Mp3Repeat.No);
 makerbit.playMp3TrackFromFolder(1, 1, Mp3Repeat.Forever);
 makerbit.playMp3Folder(1, Mp3Repeat.No);
