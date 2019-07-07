@@ -18,6 +18,7 @@
   "makerbit.onMp3TrackStarted|block": "wenn MP3 Titel beginnt",
   "makerbit.playMp3Folder|block": "spiele MP3 Ordner %folder | %repeat",
   "makerbit.playMp3TrackFromFolder|block": "spiele MP3 Titel %track | im Ordner %folder | %repeat",
+  "makerbit.playMp3Track|block": "spiele MP3 Titel %track | im Ordner %folder und warte bis Titelende",
   "makerbit.runMp3Command|block": "MP3 %command",
   "makerbit.setMp3Volume|block": "stelle MP3 Lautstärke auf %volume",
   "makerbit|block": "MakerBit",

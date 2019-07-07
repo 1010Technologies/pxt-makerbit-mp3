@@ -18,6 +18,7 @@
   "makerbit.onMp3TrackStarted|block": "on MP3 track started",
   "makerbit.playMp3Folder|block": "play MP3 folder %folder | %repeat",
   "makerbit.playMp3TrackFromFolder|block": "play MP3 track %track | from folder %folder | %repeat",
+  "makerbit.playMp3Track|block": "play MP3 track %track | from folder %folder and wait for completion",
   "makerbit.runMp3Command|block": "MP3 %command",
   "makerbit.setMp3Volume|block": "set MP3 volume to %volume",
   "makerbit|block": "MakerBit",
