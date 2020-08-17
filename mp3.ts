@@ -1,3 +1,4 @@
+
 // MakerBit Serial MP3 blocks supporting Catalex Serial MP3 1.0
 
 const enum Mp3Repeat {
@@ -46,31 +47,51 @@ namespace makerbit {
     isPlaying: boolean;
   }
 
-  let deviceState: DeviceState;
+  let deviceState: DeviceState = undefined;
 
   const MICROBIT_MAKERBIT_MP3_TRACK_STARTED_ID = 756;
   const MICROBIT_MAKERBIT_MP3_TRACK_COMPLETED_ID = 757;
 
+  function readUntilResponseHeader(): void {
+    let startFound = false;
+    while (true) {
+      const byte = serial.readBuffer(1).getNumber(NumberFormat.UInt8LE, 0);
+      if (byte == YX5300.ResponseType.RESPONSE_START_BYTE) {
+        startFound = true
+      } else if (startFound && byte == YX5300.ResponseType.RESPONSE_VER_BYTE) {
+        return;
+      } else {
+        startFound = false;
+      }
+    }
+  }
+
   function readSerial() {
     const responseBuffer: Buffer = pins.createBuffer(10);
+
+    // Set response header bytes
     responseBuffer.setNumber(
       NumberFormat.UInt8LE,
       0,
       YX5300.ResponseType.RESPONSE_START_BYTE
     );
+    responseBuffer.setNumber(
+      NumberFormat.UInt8LE,
+      1,
+      YX5300.ResponseType.RESPONSE_VER_BYTE
+    );
 
+    // Read, decode and handle serial responses
     while (true) {
-      const first = serial.readBuffer(1);
+      readUntilResponseHeader();
 
-      if (
-        first.getNumber(NumberFormat.UInt8LE, 0) ==
-        YX5300.ResponseType.RESPONSE_START_BYTE
-      ) {
-        const remainder = serial.readBuffer(9);
-        responseBuffer.write(1, remainder);
-        const response = YX5300.decodeResponse(responseBuffer);
-        handleResponse(response);
+      for (let i = 2; i < 10; i++) {
+        const buf = serial.readBuffer(1);
+        responseBuffer.write(i, buf)
       }
+
+      const response = YX5300.decodeResponse(responseBuffer);
+      handleResponse(response);
     }
   }
 
@@ -459,6 +480,8 @@ namespace makerbit {
     export const enum ResponseType {
       RESPONSE_INVALID = 0x00,
       RESPONSE_START_BYTE = 0x7e,
+      RESPONSE_VER_BYTE = 0xff,
+      RESPONSE_ENDING_BYTE = 0xEF,
       TF_CARD_INSERT = 0x3a,
       TRACK_COMPLETED = 0x3d,
       TRACK_NOT_FOUND = 0x40,
@@ -470,7 +493,7 @@ namespace makerbit {
       FOLDER_COUNT = 0x4f
     }
 
-    let commandBuffer: Buffer;
+    let commandBuffer: Buffer = undefined;
 
     export function composeSerialCommand(
       command: CommandCode,
@@ -597,11 +620,15 @@ namespace makerbit {
         return { type: ResponseType.RESPONSE_INVALID };
       }
 
-      if (response.getNumber(NumberFormat.UInt8LE, 0) != 0x7e) {
+      if (response.getNumber(NumberFormat.UInt8LE, 0) != ResponseType.RESPONSE_START_BYTE) {
         return { type: ResponseType.RESPONSE_INVALID };
       }
 
-      if (response.getNumber(NumberFormat.UInt8LE, 9) != 0xef) {
+      if (response.getNumber(NumberFormat.UInt8LE, 1) != ResponseType.RESPONSE_VER_BYTE) {
+        return { type: ResponseType.RESPONSE_INVALID };
+      }
+
+      if (response.getNumber(NumberFormat.UInt8LE, 9) != ResponseType.RESPONSE_ENDING_BYTE) {
         return { type: ResponseType.RESPONSE_INVALID };
       }
 
