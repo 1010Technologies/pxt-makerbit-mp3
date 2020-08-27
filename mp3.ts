@@ -105,9 +105,22 @@ namespace makerbit {
       case YX5300.ResponseType.TRACK_COMPLETED:
         handleResponseTrackCompleted(response);
         break;
+      case YX5300.ResponseType.PLAYBACK_STATUS:
+          handleResponseStatus(response);
+          break;
       default:
         break;
     }
+  }
+
+  function handleResponseStatus(response: YX5300.Response) {
+    if (!deviceState) {
+      return;
+    }
+
+    // The data high bytes contains the file store (TF is 2).
+    // The data low byte contains the playback status: stopped=0, playing=1, paused=2.
+    deviceState.isPlaying = (response.payload & 0xFF) == 1;
   }
 
   function handleResponseTrackNotFound(response: YX5300.Response) {
@@ -205,6 +218,8 @@ namespace makerbit {
 
     playMp3TrackFromFolder(track, folder, Mp3Repeat.No);
     while (deviceState.isPlaying) {
+      basic.pause(250);
+      YX5300.queryStatus();
       basic.pause(250);
     }
   }
