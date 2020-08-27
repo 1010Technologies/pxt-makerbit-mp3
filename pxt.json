@@ -4,7 +4,8 @@
     "description": "MakeCode extension for Serial MP3 devices with the YX5300 chip",
     "license": "MIT",
     "dependencies": {
-        "core": "*"
+        "core": "*",
+        "serial-read": "github:philipphenkel/pxt-serial-read#v0.0.7"
     },
     "files": [
         "namespace.ts",

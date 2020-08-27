@@ -1,11 +1,10 @@
-
 // MakerBit Serial MP3 blocks supporting Catalex Serial MP3 1.0
 
 const enum Mp3Repeat {
   //% block="once"
   No = 0,
   //% block="forever"
-  Forever = 1
+  Forever = 1,
 }
 
 const enum Mp3Command {
@@ -26,13 +25,13 @@ const enum Mp3Command {
   //% block="mute"
   MUTE,
   //% block="unmute"
-  UNMUTE
+  UNMUTE,
 }
 
 namespace makerbit {
   const enum PlayMode {
     Track = 0,
-    Folder = 1
+    Folder = 1,
   }
 
   interface DeviceState {
@@ -52,45 +51,48 @@ namespace makerbit {
   const MICROBIT_MAKERBIT_MP3_TRACK_STARTED_ID = 756;
   const MICROBIT_MAKERBIT_MP3_TRACK_COMPLETED_ID = 757;
 
-  function readUntilResponseHeader(): void {
+  function readUntilResponseStart(): void {
     let startFound = false;
     while (true) {
-      const byte = serial.readBuffer(1).getNumber(NumberFormat.UInt8LE, 0);
-      if (byte == YX5300.ResponseType.RESPONSE_START_BYTE) {
-        startFound = true
-      } else if (startFound && byte == YX5300.ResponseType.RESPONSE_VER_BYTE) {
-        return;
-      } else {
-        startFound = false;
+      while (serial.available() > 0) {
+        const c = serial.readChar(SerialMode.ASYNC);
+        if (c == YX5300.ResponseType.RESPONSE_START_BYTE) {
+          startFound = true;
+        } else if (startFound && c == YX5300.ResponseType.RESPONSE_VER_BYTE) {
+          return;
+        } else {
+          startFound = false;
+        }
       }
+      basic.pause(200);
     }
   }
 
   function readSerial() {
-    const responseBuffer: Buffer = pins.createBuffer(10);
+    const buffer: Buffer = pins.createBuffer(10);
 
-    // Set response header bytes
-    responseBuffer.setNumber(
+    buffer.setNumber(
       NumberFormat.UInt8LE,
       0,
       YX5300.ResponseType.RESPONSE_START_BYTE
     );
-    responseBuffer.setNumber(
+    buffer.setNumber(
       NumberFormat.UInt8LE,
       1,
       YX5300.ResponseType.RESPONSE_VER_BYTE
     );
 
-    // Read, decode and handle serial responses
     while (true) {
-      readUntilResponseHeader();
+      readUntilResponseStart();
 
-      for (let i = 2; i < 10; i++) {
-        const buf = serial.readBuffer(1);
-        responseBuffer.write(i, buf)
+      let bufferIndex = 2;
+      while (serial.available() > 0 && bufferIndex < 10) {
+        const c = serial.readChar(SerialMode.ASYNC);
+        buffer.setNumber(NumberFormat.UInt8LE, bufferIndex, c);
+        bufferIndex++;
       }
 
-      const response = YX5300.decodeResponse(responseBuffer);
+      const response = YX5300.decodeResponse(buffer);
       handleResponse(response);
     }
   }
@@ -182,7 +184,7 @@ namespace makerbit {
       volume: 30,
       previousTrackCompletedResponse: -1,
       lastTrackEventValue: 0,
-      isPlaying: false
+      isPlaying: false,
     };
   }
 
@@ -474,14 +476,14 @@ namespace makerbit {
       QUERY_TOTAL_TRACK_COUNT = 0x48,
       QUERY_TRACK = 0x4c,
       QUERY_FOLDER_TRACK_COUNT = 0x4e,
-      QUERY_FOLDER_COUNT = 0x4f
+      QUERY_FOLDER_COUNT = 0x4f,
     }
 
     export const enum ResponseType {
       RESPONSE_INVALID = 0x00,
       RESPONSE_START_BYTE = 0x7e,
       RESPONSE_VER_BYTE = 0xff,
-      RESPONSE_ENDING_BYTE = 0xEF,
+      RESPONSE_ENDING_BYTE = 0xef,
       TF_CARD_INSERT = 0x3a,
       TRACK_COMPLETED = 0x3d,
       TRACK_NOT_FOUND = 0x40,
@@ -490,7 +492,7 @@ namespace makerbit {
       VOLUME = 0x43,
       CURRENT_TRACK = 0x4c,
       FOLDER_TRACK_COUNT = 0x4e,
-      FOLDER_COUNT = 0x4f
+      FOLDER_COUNT = 0x4f,
     }
 
     let commandBuffer: Buffer = undefined;
@@ -620,15 +622,24 @@ namespace makerbit {
         return { type: ResponseType.RESPONSE_INVALID };
       }
 
-      if (response.getNumber(NumberFormat.UInt8LE, 0) != ResponseType.RESPONSE_START_BYTE) {
+      if (
+        response.getNumber(NumberFormat.UInt8LE, 0) !=
+        ResponseType.RESPONSE_START_BYTE
+      ) {
         return { type: ResponseType.RESPONSE_INVALID };
       }
 
-      if (response.getNumber(NumberFormat.UInt8LE, 1) != ResponseType.RESPONSE_VER_BYTE) {
+      if (
+        response.getNumber(NumberFormat.UInt8LE, 1) !=
+        ResponseType.RESPONSE_VER_BYTE
+      ) {
         return { type: ResponseType.RESPONSE_INVALID };
       }
 
-      if (response.getNumber(NumberFormat.UInt8LE, 9) != ResponseType.RESPONSE_ENDING_BYTE) {
+      if (
+        response.getNumber(NumberFormat.UInt8LE, 9) !=
+        ResponseType.RESPONSE_ENDING_BYTE
+      ) {
         return { type: ResponseType.RESPONSE_INVALID };
       }
 
