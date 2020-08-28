@@ -182,12 +182,11 @@ namespace makerbit {
   //% weight=50
   export function connectSerialMp3(mp3RX: DigitalPin, mp3TX: DigitalPin): void {
     serial.redirect(mp3RX as number, mp3TX as number, BaudRate.BaudRate9600);
-    control.inBackground(readSerial);
-    sendCommand(YX5300.selectDeviceTfCard());
-    control.waitMicros(500 * 1000);
-    sendCommand(YX5300.unmute());
-    setMp3Volume(30);
 
+    if(!deviceState) {
+      control.inBackground(readSerial);
+    }
+    
     deviceState = {
       track: 1,
       folder: 1,
@@ -199,6 +198,13 @@ namespace makerbit {
       lastTrackEventValue: 0,
       isPlaying: false,
     };
+
+    sendCommand(YX5300.selectDeviceTfCard());
+    control.waitMicros(500 * 1000);
+    sendCommand(YX5300.stop());
+    sendCommand(YX5300.queryStatus());
+    sendCommand(YX5300.unmute());
+    setMp3Volume(30);
   }
 
   /**
@@ -213,13 +219,13 @@ namespace makerbit {
   //% weight=49
   export function playMp3Track(track: number, folder: number): void {
     if (!deviceState) {
-      return;
+      connectSerialMp3(DigitalPin.P0, DigitalPin.P1);
     }
 
     playMp3TrackFromFolder(track, folder, Mp3Repeat.No);
     while (deviceState.isPlaying) {
       basic.pause(250);
-      YX5300.queryStatus();
+      sendCommand(YX5300.queryStatus());
       basic.pause(250);
     }
   }
@@ -241,7 +247,7 @@ namespace makerbit {
     repeat: Mp3Repeat
   ): void {
     if (!deviceState) {
-      return;
+      connectSerialMp3(DigitalPin.P0, DigitalPin.P1);
     }
 
     deviceState.track = Math.min(
@@ -266,7 +272,7 @@ namespace makerbit {
   //% weight=47
   export function playMp3Folder(folder: number, repeat: Mp3Repeat): void {
     if (!deviceState) {
-      return;
+      connectSerialMp3(DigitalPin.P0, DigitalPin.P1);
     }
 
     deviceState.track = 1;
@@ -309,7 +315,7 @@ namespace makerbit {
   //% weight=46
   export function setMp3Volume(volume: number): void {
     if (!deviceState) {
-      return;
+      connectSerialMp3(DigitalPin.P0, DigitalPin.P1);
     }
 
     if (volume < 0 || volume > 30) {
@@ -329,7 +335,7 @@ namespace makerbit {
   //% weight=45
   export function runMp3Command(command: Mp3Command): void {
     if (!deviceState) {
-      return;
+      connectSerialMp3(DigitalPin.P0, DigitalPin.P1);
     }
 
     switch (command) {
