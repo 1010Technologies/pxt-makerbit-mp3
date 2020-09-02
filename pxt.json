@@ -5,7 +5,7 @@
     "license": "MIT",
     "dependencies": {
         "core": "*",
-        "serial-read": "github:philipphenkel/pxt-serial-read#v0.0.9"
+        "serial-read": "github:philipphenkel/pxt-serial-read#v0.0.12"
     },
     "files": [
         "namespace.ts",
