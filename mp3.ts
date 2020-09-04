@@ -55,7 +55,7 @@ namespace makerbit {
     let startFound = false;
     while (true) {
       while (serial.available() > 0) {
-        const c = serial.readChar(SerialMode.ASYNC);
+        const c = serial.read();
         if (c == YX5300.ResponseType.RESPONSE_START_BYTE) {
           startFound = true;
         } else if (startFound && c == YX5300.ResponseType.RESPONSE_VER_BYTE) {
@@ -87,7 +87,7 @@ namespace makerbit {
 
       let bufferIndex = 2;
       while (serial.available() > 0 && bufferIndex < 10) {
-        const c = serial.readChar(SerialMode.ASYNC);
+        const c = serial.read();
         buffer.setNumber(NumberFormat.UInt8LE, bufferIndex, c);
         bufferIndex++;
       }
@@ -182,7 +182,7 @@ namespace makerbit {
   //% weight=50
   export function connectSerialMp3(mp3RX: DigitalPin, mp3TX: DigitalPin): void {
     serial.redirect(mp3RX as number, mp3TX as number, BaudRate.BaudRate9600);
-
+    
     if(!deviceState) {
       control.inBackground(readSerial);
     }
