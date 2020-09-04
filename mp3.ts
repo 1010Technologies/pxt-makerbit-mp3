@@ -69,6 +69,8 @@ namespace makerbit {
   }
 
   function readSerial() {
+    serial.setRxBufferSize(32)
+
     const buffer: Buffer = pins.createBuffer(10);
 
     buffer.setNumber(
