@@ -108,8 +108,8 @@ namespace makerbit {
         handleResponseTrackCompleted(response);
         break;
       case YX5300.ResponseType.PLAYBACK_STATUS:
-          handleResponseStatus(response);
-          break;
+        handleResponseStatus(response);
+        break;
       default:
         break;
     }
@@ -184,11 +184,11 @@ namespace makerbit {
   //% weight=50
   export function connectSerialMp3(mp3RX: DigitalPin, mp3TX: DigitalPin): void {
     serial.redirect(mp3RX as number, mp3TX as number, BaudRate.BaudRate9600);
-    
-    if(!deviceState) {
+
+    if (!deviceState) {
       control.inBackground(readSerial);
     }
-    
+
     deviceState = {
       track: 1,
       folder: 1,
@@ -385,8 +385,7 @@ namespace makerbit {
   }
 
   function sendCommand(command: Buffer): void {
-    serial.writeBuffer(command);
-    control.waitMicros(1000 * YX5300.REQUIRED_PAUSE_BETWEEN_COMMANDS_MILLIS);
+    serial.writeBufferBlocking(command);
   }
 
   /**
