@@ -44,6 +44,7 @@ namespace makerbit {
     previousTrackCompletedResponse: int16;
     lastTrackEventValue: uint16;
     isPlaying: boolean;
+    nextCommand: number;
   }
 
   let deviceState: DeviceState = undefined;
@@ -199,14 +200,16 @@ namespace makerbit {
       previousTrackCompletedResponse: -1,
       lastTrackEventValue: 0,
       isPlaying: false,
+      nextCommand: 0
     };
 
     sendCommand(YX5300.selectDeviceTfCard());
-    control.waitMicros(500 * 1000);
+    basic.pause(500);
     sendCommand(YX5300.stop());
     sendCommand(YX5300.queryStatus());
     sendCommand(YX5300.unmute());
     setMp3Volume(30);
+    basic.pause(500);
   }
 
   /**
@@ -226,9 +229,8 @@ namespace makerbit {
 
     playMp3TrackFromFolder(track, folder, Mp3Repeat.No);
     while (deviceState.isPlaying) {
-      basic.pause(250);
+      basic.pause(500);
       sendCommand(YX5300.queryStatus());
-      basic.pause(250);
     }
   }
 
@@ -256,7 +258,7 @@ namespace makerbit {
       Math.max(track, 1),
       YX5300.MAX_TRACKS_PER_FOLDER
     );
-    deviceState.folder = folder;
+    deviceState.folder = Math.min(Math.max(folder, 1), 99);
     deviceState.playMode = PlayMode.Track;
     deviceState.repeat = repeat;
     deviceState.maxTracksInFolder = YX5300.MAX_TRACKS_PER_FOLDER;
@@ -287,6 +289,7 @@ namespace makerbit {
 
   function playTrackOnDevice(targetState: DeviceState): void {
     deviceState.previousTrackCompletedResponse = -1;
+    deviceState.isPlaying = true;
 
     sendCommand(
       YX5300.playTrackFromFolder(targetState.track, targetState.folder)
@@ -303,7 +306,7 @@ namespace makerbit {
       MICROBIT_MAKERBIT_MP3_TRACK_STARTED_ID,
       deviceState.track
     );
-    deviceState.isPlaying = true;
+
     deviceState.lastTrackEventValue = deviceState.track;
   }
 
@@ -385,6 +388,11 @@ namespace makerbit {
   }
 
   function sendCommand(command: Buffer): void {
+    const now = control.millis();
+    if (deviceState.nextCommand > now) {
+      basic.pause(deviceState.nextCommand - now);
+    }
+    deviceState.nextCommand = now + YX5300.REQUIRED_PAUSE_BETWEEN_COMMANDS_MILLIS;
     serial.writeBufferBlocking(command);
   }
 
