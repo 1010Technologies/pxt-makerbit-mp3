@@ -28,6 +28,8 @@ const enum Mp3Command {
   UNMUTE,
 }
 
+//% color=#0fbc11 icon="\u272a" block="MakerBit"
+//% category="MakerBit"
 namespace makerbit {
   const enum PlayMode {
     Track = 0,

@@ -8,7 +8,6 @@
         "serial-read": "github:philipphenkel/pxt-serial-read#v0.1.3"
     },
     "files": [
-        "namespace.ts",
         "README.md",
         "mp3.ts",
         "_locales/de/MakerBit-MP3-strings.json"
